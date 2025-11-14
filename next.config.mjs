@@ -9,7 +9,7 @@ const config = {
     return [
       {
         source: "/:lang/:path*.mdx",
-        destination: "/llms.mdx/:path*",
+        destination: "/:lang/llms.mdx/:path*",
       },
     ];
   },
