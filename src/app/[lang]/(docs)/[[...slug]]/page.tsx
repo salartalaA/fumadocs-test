@@ -10,6 +10,7 @@ import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions";
+import { i18n } from "@/lib/i18n";
 
 export default async function Page(props: PageProps<"/[lang]/[[...slug]]">) {
   const params = await props.params;
@@ -18,13 +19,27 @@ export default async function Page(props: PageProps<"/[lang]/[[...slug]]">) {
 
   const MDX = page.data.body;
 
+  let markdownUrl;
+  if (page.locale === i18n.defaultLanguage) {
+    const withLocale = (page.locale + page.url)
+      .split("/")
+      .filter(Boolean)
+      .join("/");
+
+    markdownUrl = `/${withLocale}.mdx`;
+  } else {
+    markdownUrl = `${page.url}.mdx`;
+  }
+
+  // pass `markdownUrl` to your components
+
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
-        <LLMCopyButton markdownUrl={`${page.url}.mdx`} lang={params.lang} />
-        <ViewOptions markdownUrl={`${page.url}.mdx`} lang={params.lang} />
+        <LLMCopyButton markdownUrl={markdownUrl} lang={params.lang} />
+        <ViewOptions markdownUrl={markdownUrl} lang={params.lang} />
       </div>
       <DocsBody>
         <MDX
